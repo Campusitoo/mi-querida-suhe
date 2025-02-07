@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una preguntita para mi Suhe❣️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes latido {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .latido {
+            animation: latido 1.5s infinite;
+        }
+
+        @keyframes desaparecer {
+            0% { opacity: 1; transform: scale(1); }
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+        .desaparecer {
+            animation: desaparecer 0.3s forwards;
+        }
+
+        .creepy-text {
+            font-family: 'Courier New', Courier, monospace;
+            animation: creepyGlitch 0.5s infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            text-align: center;
+            display: none;
+        }
+        @keyframes creepyGlitch {
+            0% { text-shadow: 2px 2px #ff0000; }
+            50% { text-shadow: -2px -2px #00ff00; }
+            100% { text-shadow: 2px 2px #0000ff; }
+        }
+    </style>
+</head>
+<body class="bg-blue-200 min-h-screen flex items-center justify-center">
+    <div class="text-center space-y-8 max-w-2xl px-4" id="mainContainer">
+        <div class="space-y-6">
+            <h1 class="text-4xl md:text-5xl font-cursive bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent font-bold latido">
+                Pequeña Suhi <span class="text-pink-500">❣️</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-gray-700 leading-relaxed">
+               <span class="font-semibold text-rose-600">Tu Salvita</span> hoy te propone:<br>
+                Quieres ser mi especial y fiel compañera este 14, día de San Valentín? 💌
+            </p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 justify-center items-center relative" id="botones">
+            <button onclick="aceptar()"
+                    class="si-btn px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full
+                           text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform
+                           hover:scale-105 z-20">
+                Obvio mi amor!😚❣️
+            </button>
+
+            <button
+                class="no-btn px-6 py-3 bg-rose-500 text-white rounded-full
+                       text-lg shadow-md transition-all duration-200 relative z-10"
+                id="btnNo">
+                Este año no me apetece lo siento...
+            </button>
+        </div>
+
+        <img src="https://i.imgur.com/V4J7pFp.jpeg"
+             alt="Ositos enamorados"
+             class="mx-auto w-48 h-48 object-cover rounded-xl shadow-lg mt-6"
+             id="gif">
+    </div>
+
+    <div id="creepyContent" class="text-red-600 text-4xl font-bold creepy-text">
+        POR QUÉ ME RECHAZAS?! <br>
+        <span class="text-2xl">Ya no hay vuelta atrás...</span>
+    </div>
+
+    <script>
+        const frasesNo = [
+            "Estás segura?💔",
+            "Piensalo bien...",
+            "Mira que bonito es el botón verde",
+            "Enserio? :(",
+            "Pero si somos preciosos, dale al verde",
+            "No hay vuelta atrás..."
+        ];
+
+        let contadorNo = 0;
+        let ultimoIntento = false;
+        let puedeCambiarTexto = true;
+        const gif = document.getElementById('gif');
+        const botones = document.getElementById('botones');
+        const noBtn = document.getElementById('btnNo');
+        const mainContainer = document.getElementById('mainContainer');
+        const creepyContent = document.getElementById('creepyContent');
+
+        function escapar() {
+            if (!puedeCambiarTexto || contadorNo >= frasesNo.length) return;
+
+            puedeCambiarTexto = false;
+
+            if (contadorNo === 0) {
+                noBtn.style.position = 'fixed';
+            }
+
+            noBtn.classList.add('desaparecer');
+
+            setTimeout(() => {
+                noBtn.textContent = frasesNo[contadorNo];
+                contadorNo++;
+
+                if (contadorNo < frasesNo.length) {
+                    const newX = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
+                    const newY = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
+
+                    noBtn.style.left = `${newX}px`;
+                    noBtn.style.top = `${newY}px`;
+                } else {
+                    ultimoIntento = true;
+                    noBtn.textContent = "NO ❌";
+                    noBtn.classList.add('bg-black', 'hover:bg-red-600', 'cursor-pointer');
+
+                    // Remove mouseover event, add click event
+                    noBtn.onmouseover = null;
+                    noBtn.onclick = activarModoCreepy;
+                }
+
+                noBtn.classList.remove('desaparecer');
+                document.querySelector('.si-btn').style.transform = `scale(${1 + (contadorNo * 0.15)})`;
+                gif.src = "https://i.imgur.com/2nzHl7F.jpeg";
+
+                setTimeout(() => {
+                    puedeCambiarTexto = true;
+                }, 400);
+            }, 300);
+        }
+
+        function activarModoCreepy() {
+            mainContainer.classList.add('hidden');
+
+            creepyContent.style.display = 'block';
+
+            document.body.classList.remove('bg-blue-200');
+            document.body.classList.add('bg-black');
+
+            const colors = ['#ff0000', '#880000', '#440000'];
+            let colorIndex = 0;
+
+            setInterval(() => {
+                document.body.style.backgroundColor = colors[colorIndex];
+                colorIndex = (colorIndex + 1) % colors.length;
+            }, 100);
+        }
+
+        function aceptar() {
+            confetti({
+                particleCount: 800,
+                spread: 200,
+                origin: { y: 0.6 },
+                colors: ['#ff69b4', '#ff1493', '#c71585'],
+                gravity: 0.8,
+                ticks: 300
+            });
+
+            botones.innerHTML = `
+                <div class="text-4xl text-rose-600 font-bold animate-heartbeat">
+                    FELIZ SAN VALENTÍN MI NIÑA❣️<br>
+                    <span class="text-2xl text-gray-600"> Nos vemos el 14 a las 17:00h, TE AMO 🥂❣️</span>
+                </div>
+            `;
+
+            gif.src = 'https://i.imgur.com/9UyfX4C.jpeg';noBtn.style.display = 'none';
+        }
+
+        // Check if it's a touch device to apply different event listeners
+        function isTouchDevice() {
+            return (('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0));
+        }
+
+        if (isTouchDevice()) {
+            noBtn.onclick = escapar; // Touch devices: use onclick from the start
+        } else {
+            noBtn.onmouseover = escapar; // PC: use mouseover from the start
+        }
+
+        // Special handling for the last attempt, regardless of device type
+        noBtn.addEventListener('mouseover', function() {
+            if (ultimoIntento && !isTouchDevice()) {
+                noBtn.onmouseover = null;
+                noBtn.onclick = activarModoCreepy;
+            }
+        });
+
+        noBtn.addEventListener('click', function() {
+            if (ultimoIntento && isTouchDevice()) {
+                noBtn.onclick = null;
+                activarModoCreepy();
+            }
+        });
+
+
+    </script>
+</body>
+</html>
+
